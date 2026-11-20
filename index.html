@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#203129">
+  <title>ClubConnect – Volunteer Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <!-- LOGIN / SIGN UP -->
+  <div class="auth" id="authScreen">
+    <div class="auth-card">
+      <div class="brand dark">
+        <span class="logo">C</span>
+        <span>ClubConnect</span>
+      </div>
+      <p class="muted">Volunteer Sign-up Management System</p>
+
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="login">Log In</button>
+        <button type="button" class="tab" data-tab="signup">Sign Up</button>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <label>Email
+          <input type="email" id="loginEmail" placeholder="name@school.edu" autocomplete="username">
+        </label>
+        <label>Password
+          <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password">
+        </label>
+        <small class="err" id="loginErr"></small>
+        <button class="btn primary full" type="submit">Log In</button>
+      </form>
+
+      <form id="signupForm" novalidate hidden>
+        <label>Full Name
+          <input type="text" id="signName" placeholder="e.g. Maria Santos">
+        </label>
+        <label>Email
+          <input type="email" id="signEmail" placeholder="name@school.edu" autocomplete="username">
+        </label>
+        <label>Password
+          <input type="password" id="signPass" placeholder="At least 6 characters" autocomplete="new-password">
+        </label>
+        <label>Confirm Password
+          <input type="password" id="signPass2" placeholder="Confirm password" autocomplete="new-password">
+        </label>
+        <small class="err" id="signErr"></small>
+        <button class="btn primary full" type="submit">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION -->
+  <div class="shell" id="appShell" hidden>
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo">C</span>
+        <span>ClubConnect</span>
+      </div>
+
+      <nav>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#tasks">Volunteer Tasks</a>
+        <a href="#register">Registration</a>
+        <a href="#volunteers">Volunteers</a>
+        <a href="#reports">Reports</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>Volunteer Management</span>
+        <small>ClubConnect © 2026</small>
+      </div>
+    </aside>
+
+    <main>
+
+      <!-- DASHBOARD HEADER -->
+      <header class="topbar" id="dashboard">
+        <div>
+          <h1>Volunteer Sign-up Management</h1>
+          <p class="muted">
+            Welcome, <strong id="userName"></strong>.
+            Organize tasks and track student volunteers.
+          </p>
+        </div>
+
+        <div class="top-actions">
+          <button class="btn primary" id="addTaskBtn">+ Add Task</button>
+          <button class="btn" id="logoutBtn">Log Out</button>
+        </div>
+      </header>
+
+      <!-- STATISTICS -->
+      <section class="stats">
+        <div class="card stat">
+          <span class="muted">Total Tasks</span>
+          <strong id="statTasks">0</strong>
+        </div>
+        <div class="card stat">
+          <span class="muted">Registered Volunteers</span>
+          <strong id="statVolunteers">0</strong>
+        </div>
+        <div class="card stat">
+          <span class="muted">Available Slots</span>
+          <strong id="statSlots">0</strong>
+        </div>
+        <div class="card stat">
+          <span class="muted">Completed Tasks</span>
+          <strong id="statDone">0</strong>
+        </div>
+      </section>
+
+      <!-- TASK MANAGEMENT -->
+      <section class="card" id="tasks">
+        <div class="section-head">
+          <div>
+            <h2>Volunteer Tasks</h2>
+            <p class="muted">Manage and organize volunteer activities.</p>
+          </div>
+
+          <div class="toolbar">
+            <input type="search" id="searchInput" placeholder="Search tasks..." aria-label="Search tasks">
+            <select id="filterSelect" aria-label="Filter tasks">
+              <option value="all">All Tasks</option>
+              <option value="needs">Needs Volunteers</option>
+              <option value="full">Fully Staffed</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="taskList" class="task-grid"></div>
+      </section>
+
+      <!-- REGISTRATION AND RECENT VOLUNTEERS -->
+      <div class="two-col">
+
+        <section class="card" id="register">
+          <h2>Quick Volunteer Registration</h2>
+          <p class="muted section-description">Register a student for an available task.</p>
+
+          <form id="regForm" novalidate>
+            <label>Full Name
+              <input type="text" id="regName" placeholder="e.g. Maria Santos">
+              <small class="err" id="errName"></small>
+            </label>
+
+            <label>School Email or Contact Number
+              <input type="text" id="regContact" placeholder="name@school.edu or 09123456789">
+              <small class="err" id="errContact"></small>
+            </label>
+
+            <label>Volunteer Task
+              <select id="regTask">
+                <option value="">Select a task...</option>
+              </select>
+              <small class="err" id="errTask"></small>
+            </label>
+
+            <button class="btn primary full" type="submit">
+              Submit Registration
+            </button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Recent Volunteers</h2>
+          <p class="muted section-description">Latest registered students.</p>
+          <ul id="recentList" class="recent"></ul>
+        </section>
+
+      </div>
+
+      <!-- VOLUNTEER MANAGEMENT -->
+      <section class="card" id="volunteers">
+        <div class="section-head">
+          <div>
+            <h2>Volunteer Management</h2>
+            <p class="muted">View and manage registered volunteers.</p>
+          </div>
+
+          <select id="volFilter" aria-label="Filter volunteers by task">
+            <option value="all">All Tasks</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Volunteer Name</th>
+                <th>Contact Information</th>
+                <th>Assigned Task</th>
+                <th>Date Registered</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="volBody"></tbody>
+          </table>
+        </div>
+
+        <p id="volEmpty" class="empty" hidden></p>
+      </section>
+
+      <!-- REPORTS -->
+      <section class="card" id="reports">
+        <div class="section-head">
+          <div>
+            <h2>Reports and Records</h2>
+            <p class="muted">Export your volunteer registration records.</p>
+          </div>
+          <button class="btn primary" id="exportBtn">↓ Export CSV</button>
+        </div>
+
+        <div class="report-summary">
+          <div>
+            <span class="muted">Total Activities</span>
+            <strong id="reportTasks">0</strong>
+          </div>
+          <div>
+            <span class="muted">Total Volunteers</span>
+            <strong id="reportVolunteers">0</strong>
+          </div>
+          <div>
+            <span class="muted">Completed Activities</span>
+            <strong id="reportDone">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>© 2026 ClubConnect. Volunteer Sign-up Management System.</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ADD / EDIT TASK MODAL -->
+  <div class="modal" id="taskModal" hidden>
+    <div class="modal-box">
+      <div class="modal-heading">
+        <div>
+          <h2 id="modalTitle">Add Task</h2>
+          <p class="muted">Enter the details of your volunteer activity.</p>
+        </div>
+        <button type="button" class="close-btn" id="cancelModal" aria-label="Close">×</button>
+      </div>
+
+      <form id="taskForm" novalidate>
+        <input type="hidden" id="taskId">
+
+        <label>Task Name
+          <input type="text" id="taskName" placeholder="Enter task name">
+          <small class="err" id="errTaskName"></small>
+        </label>
+
+        <label>Description
+          <textarea id="taskDesc" rows="3" placeholder="Describe the volunteer activity..."></textarea>
+        </label>
+
+        <div class="row">
+          <label>Event Date
+            <input type="date" id="taskDate">
+            <small class="err" id="errTaskDate"></small>
+          </label>
+
+          <label>Volunteer Capacity
+            <input type="number" id="taskCap" min="1" max="500" placeholder="e.g. 10">
+            <small class="err" id="errTaskCap"></small>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn" id="cancelModalBottom">Cancel</button>
+          <button type="submit" class="btn primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>
